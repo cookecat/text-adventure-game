@@ -84,8 +84,8 @@ class player:
     def mapPickup(self):
         self.mapCollected = True
 
-    def killSelf(self):
-        self.HP = 0
+    def player.tomePickup(self):
+        self.tomePickedUp = True
 
 @dataclass
 class locationData:
@@ -102,7 +102,7 @@ highway = locationData("highway", 0, {0: "you have arrived at the local highway"
 
 road = locationData("road", 0, {0: "you have arrived at road", 1: "you have come back to the road"}, 0, 1, False)
 
-basement = locationData("basement", 0, {0: {"message": "there is literally nothing here, you should [go back]"}, 1: {"message": "why did you come back???? [go back]"}, 3: {"message": "genuinely kill yourself. [kill yourself] or [go back]", "added option": {"kill yourself": player.killSelf}}}, 1, 3, True)
+basement = locationData("basement", 0, {0: {"message": "there is literally nothing here, you should [go back]"}, 1: {"message": "why did you come back???? [go back]"}, 3: {"message": "you end up finding a magical tome on a bookshelf. [go back] or [pick up tome]", "added option": {"pick up tome": player.tomePickup}}}, 1, 3, True)
 
 
 
