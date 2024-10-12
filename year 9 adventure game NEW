@@ -1,0 +1,104 @@
+from csinsc import *
+import array
+import time
+
+def inputMsg(message):
+    input(message)
+    clear()
+
+class player:
+    def __init__(self, maxHP, defense):
+        self.maxHP = maxHP
+        self.HP = self.maxHP
+        self.defense = defense
+        self.currentLocation = "home"
+        self.mapCollected = False
+        self.inventory = [None]
+
+    def pickUpTome(self):
+        self.Tome = True
+            
+        
+    def homeFunc(self):
+        self.currentLocationData = locations[self.currentLocation]["area data"]
+        self.currentLocation = self.currentLocationData.locationString
+        self.currentMsg = self.currentLocationData.activeMsg
+        
+        areaItems = []
+        if len(self.currentLocationData.items) > 0:
+            for i in range(len(self.currentLocationData.items)):
+                targetedItem = self.currentLocationData.items[i]
+                self.currentMsg += targetedItem.itemMsg
+                areaItems.append(targetedItem)
+
+            
+        self.task = input(self.currentMsg)
+        
+        areaItemCmds = []
+        for n in range(len(areaItems)):
+            targetedItem = areaItems[n]
+            #targetedItemCmd = targetedItem.command
+            #print(targetedItem)
+            #areaItemCmds.append(areaItems[targetedItemCmd])
+            if self.task == targetedItem.command:
+                inputMsg(targetedItem.pickupMsg)
+                self.inventory.append(targetedItem)
+                self.currentLocationData.items.remove(targetedItem)
+                validReply = True
+        
+        
+        if self.task in locations[self.currentLocation]["movement options"]:
+            self.currentLocationData = locations[self.currentLocation]["movement options"][self.task]
+            self.currentLocation = self.currentLocationData.locationString
+        
+        elif validReply != True:
+            inputMsg("unrecognised command")
+            validReply = False
+        
+                
+mainPlayer = player(100, 0)
+
+class item:
+    def __init__(self, itemMsg, pickupMsg, command):
+        self.itemMsg = itemMsg
+        self.pickupMsg = pickupMsg
+        self.command = command
+        
+mapItem = item("There is a map chilling. ", "you take the map", "take map")
+holoBook = item("There is a book. ", "you take the book", "take book")
+
+class locationData:
+    def __init__(self, locationString, activeMsg, items):
+        self.locationString = locationString
+        self.activeMsg = activeMsg
+        self.items = items
+
+    
+home = locationData("home", "You begin your adventure at home, where would you like to go? NORTH, SOUTH, EAST or Basement. ", [mapItem, holoBook])
+
+highway = locationData("highway", "you have arrived at the local highway. ", [])
+
+road = locationData("road", "you have arrived at a road. ", [])
+
+basement = locationData("basement", "there is literally nothing here, you should [go back]. ", [])
+
+
+
+locations = {"home": {"area data": home, "movement options": {"NORTH": road, "SOUTH": highway, "basement": basement}},
+
+             "highway": {"area data": highway, "movement options": {"NORTH": home}},
+
+             "road": {"area data": road, "movement options": {"SOUTH": home}},
+
+             "basement": {"area data": basement, "movement options": {"go back": home},
+                        }
+                 
+             }
+
+mainPlayer = player(100, 0)
+
+inputMsg("hello! welcome to my adventure game! press [ENTER] to continue")
+inputMsg("i hope you have a great time!")
+
+while True:
+    mainPlayer.homeFunc()
